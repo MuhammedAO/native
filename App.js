@@ -1,31 +1,35 @@
-import React, { useState } from "react"
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import React, { useState } from 'react'
+import { StyleSheet, Text, View, FlatList } from 'react-native'
+import Header from './components/header'
+import TodoItem from './components/todoItem'
 
-const App = () => {
-  const [count, setCount] = useState(0)
-  {/*in react, whenever our next value of state depends on the prevState, 
-  it's safer to pass a fn which returns the new state
- */}
-  const onPressIncrease = () => setCount(prevCount => prevCount + 1)
-  const onPressDecrease = () => setCount(prevCount => prevCount - 1)
+export default function App() {
+  const [todos, setTodos] = useState([
+    { text: 'Eat', key: '1' },
+    { text: 'Code', key: '2' },
+    { text: 'Gym', key: '3' }
+  ])
+
+  const pressHandler = key => {
+    setTodos(prevTodos => {
+      return prevTodos.filter(todo => todo.key != key)
+    })
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.countContainer}>
-        <Text>Count: {count}</Text>
+      <Header />
+      <View style={styles.content}>
+        {/* add todo form */}
+        <View style={styles.list}>
+          <FlatList
+            data={todos}
+            renderItem={({ item }) => (
+              <TodoItem item={item} pressHandler={pressHandler} />
+            )}
+          />
+        </View>
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={onPressIncrease}
-      >
-        <Text>Count up</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.btn}
-        onPress={onPressDecrease}
-      >
-        <Text>Count Down</Text>
-      </TouchableOpacity>
     </View>
   )
 }
@@ -33,24 +37,12 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 10
+    backgroundColor: '#fff',
   },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
+  content: {
+    padding: 40,
   },
-  countContainer: {
-    alignItems: "center",
-    padding: 10
+  list: {
+    marginTop: 20,
   },
-  btn: {
-    marginTop: 15,
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
-  }
 })
-
-export default App
